@@ -54,7 +54,7 @@ function chunkText(text, profile = 'default') {
     start = end - overlap;
     
     // Prevent infinite loop if overlap >= size
-    if (start >= words.length || end === words.length) {
+    if (end === words.length) {
       break;
     }
   }
@@ -167,7 +167,7 @@ app.post('/search_content', async (req, res) => {
     }
 
     // Embed the query
-    const [queryEmbedding] = await embedText(query);
+    const [queryEmbedding] = await embedText([query]);
 
     // Call Supabase RPC match_kb_chunks
     const { data, error } = await supabase.rpc('match_kb_chunks', {
@@ -215,7 +215,7 @@ app.post('/log_completion_result', async (req, res) => {
     const type = outcome ? 'completion_good' : 'completion_bad';
 
     // Embed the model answer
-    const [embedding] = await embedText(model_answer);
+    const [embedding] = await embedText([model_answer]);
 
     // Construct content with all relevant information
     const content = JSON.stringify({
