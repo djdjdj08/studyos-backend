@@ -233,6 +233,70 @@ app.post('/log_completion_result', async (req, res) => {
   }
 });
 
+// ---- MCP MANIFEST ----
+app.get('/.well-known/mcp.json', (req, res) => {
+  res.json({
+    version: "1.0.0",
+    tools: [
+      {
+        name: "ingest_content",
+        description: "Store user-provided resources or instructions into Supabase.",
+        input_schema: {
+          type: "object",
+          properties: {
+            course: { type: "string" },
+            type: { type: "string" },
+            subtopic: { type: "string" },
+            assignment_type: { type: "string" },
+            chunk_profile: { type: "string" },
+            raw_text: { type: "string" },
+            source_name: { type: "string" }
+          },
+          required: ["course", "type", "raw_text"]
+        }
+      },
+      {
+        name: "search_content",
+        description: "Semantic search through stored resources, instructions, and past completions.",
+        input_schema: {
+          type: "object",
+          properties: {
+            course: { type: "string" },
+            query: { type: "string" },
+            types: {
+              type: "array",
+              items: { type: "string" }
+            },
+            subtopic: { type: "string" },
+            assignment_type: { type: "string" },
+            top_k: { type: "number" },
+            threshold: { type: "number" }
+          },
+          required: ["query"]
+        }
+      },
+      {
+        name: "log_completion_result",
+        description: "Store graded assignment results in Supabase to improve future outputs.",
+        input_schema: {
+          type: "object",
+          properties: {
+            course: { type: "string" },
+            assignment_type: { type: "string" },
+            subtopic: { type: "string" },
+            original_prompt: { type: "string" },
+            model_answer: { type: "string" },
+            outcome: { type: "string" },
+            score: { type: "number" },
+            teacher_feedback: { type: "string" }
+          },
+          required: ["course", "assignment_type", "model_answer", "outcome"]
+        }
+      }
+    ]
+  });
+});
+
 // ---- SIMPLE HEALTH + ROOT CHECKS ----
 app.get('/', (req, res) => {
   res.json({ status: 'ok', message: 'StudyOS backend root' });
