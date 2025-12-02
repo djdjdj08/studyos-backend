@@ -233,6 +233,15 @@ app.post('/log_completion_result', async (req, res) => {
   }
 });
 
+// ---- SIMPLE HEALTH + ROOT CHECKS ----
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', message: 'StudyOS backend root' });
+});
+
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
 // ---- SERVER ----
 const port = process.env.PORT || 3001;
 app.listen(port, () =>
